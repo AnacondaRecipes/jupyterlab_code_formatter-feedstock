@@ -52,7 +52,8 @@ about:
   license_file: LICENSE
   summary: A JupyterLab plugin to facilitate invocation of code formatters.
   dev_url: https://github.com/ryantam626/jupyterlab_code_formatter
-  doc_url: https://github.com/ryantam626/jupyterlab_code_formatter
+  doc_url: https://jupyterlab-code-formatter.readthedocs.io/
+  description: A JupyterLab plugin to facilitate invocation of code formatters.
 
 extra:
   recipe-maintainers:

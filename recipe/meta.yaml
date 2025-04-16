@@ -58,7 +58,10 @@ test:
     # extension is marked as enbaled and outdated, contrary to what the changelog states, but is still functional
     #- jupyter labextension list 2>&1 | grep -ie "jupyterlab_code_formatter.*OK.*(python, jupyterlab-code-formatter)"
     # missing styler for test_can_use_styler*
-    - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not test_can_use_styler"
+    {% set tests_to_skip = "test_can_use_styler" %}
+    # some issues with subprocess call inside test on windows
+    {% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
+    - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not {{ tests_to_skip }}"
 
 about:
   home: https://github.com/ryantam626/jupyterlab_code_formatter

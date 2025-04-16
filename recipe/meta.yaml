@@ -31,12 +31,25 @@ requirements:
     - notebook >=6,<8
 
 test:
+  source_files:
+    - jupyterlab_code_formatter/tests
   imports:
     - jupyterlab_code_formatter
   requires:
     - jupyterlab
     - pip
     - m2-grep # [win]
+    - pytest
+    - pytest-asyncio
+    - pytest-jupyter >=0.6.0
+    - pytest-jupyter-server >=0.6.0
+    - black >=22.1.0
+    - isort
+    - yapf
+    # - rpy2 # missing
+    - importlib_metadata  # [py<38]
+    - ruff
+    - jupyterlab >=4,<5
   commands:
     - pip check
     - jupyter server extension list
@@ -44,6 +57,8 @@ test:
     - jupyter labextension list
     # extension is marked as enbaled and outdated, contrary to what the changelog states, but is still functional
     #- jupyter labextension list 2>&1 | grep -ie "jupyterlab_code_formatter.*OK.*(python, jupyterlab-code-formatter)"
+    # missing styler for test_can_use_styler*
+    - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not test_can_use_styler"
 
 about:
   home: https://github.com/ryantam626/jupyterlab_code_formatter

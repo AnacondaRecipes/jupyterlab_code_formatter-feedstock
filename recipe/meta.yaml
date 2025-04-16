@@ -1,5 +1,5 @@
 {% set name = "jupyterlab_code_formatter" %}
-{% set version = "2.2.1" %}
+{% set version = "3.0.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,16 +7,16 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 85322819da61f025ebc7c4a842979994fa812ad44c334fdb6ebb9ebad58dae08
+  sha256: 55adb8fa8b9bd58f0b39e7d3ead6c1e862e9ebc1444a66cdb4233d8dc6351d4b
 
 build:
   number: 0
-  skip: true # [py<37 or s390x]
+  skip: true # [py<37]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   host:
-    - hatchling >=1.4.0
+    - hatchling >=1.5.0
     - hatch-nodejs-version
     - hatch-jupyter-builder >=0.5
     - python
@@ -27,16 +27,29 @@ requirements:
     - python
   run_constrained:
     # infered from changelog 
-    - jupyterlab >=3.6,<5
+    - jupyterlab >=4,<5
     - notebook >=6,<8
 
 test:
+  source_files:
+    - jupyterlab_code_formatter/tests
   imports:
     - jupyterlab_code_formatter
   requires:
     - jupyterlab
     - pip
     - m2-grep # [win]
+    - pytest
+    - pytest-asyncio
+    - pytest-jupyter >=0.6.0
+    - pytest-jupyter-server >=0.6.0
+    - black >=22.1.0
+    - isort
+    - yapf
+    # - rpy2 # missing
+    - importlib_metadata  # [py<38]
+    - ruff
+    - jupyterlab >=4,<5
   commands:
     - pip check
     - jupyter server extension list
@@ -44,6 +57,11 @@ test:
     - jupyter labextension list
     # extension is marked as enbaled and outdated, contrary to what the changelog states, but is still functional
     #- jupyter labextension list 2>&1 | grep -ie "jupyterlab_code_formatter.*OK.*(python, jupyterlab-code-formatter)"
+    # missing styler for test_can_use_styler*
+    {% set tests_to_skip = "test_can_use_styler" %}
+    # some issues with subprocess call inside test on windows
+    {% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
+    - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not ({{ tests_to_skip }})"
 
 about:
   home: https://github.com/ryantam626/jupyterlab_code_formatter
@@ -52,7 +70,8 @@ about:
   license_file: LICENSE
   summary: A JupyterLab plugin to facilitate invocation of code formatters.
   dev_url: https://github.com/ryantam626/jupyterlab_code_formatter
-  doc_url: https://github.com/ryantam626/jupyterlab_code_formatter
+  doc_url: https://jupyterlab-code-formatter.readthedocs.io/
+  description: A JupyterLab plugin to facilitate invocation of code formatters.
 
 extra:
   recipe-maintainers:

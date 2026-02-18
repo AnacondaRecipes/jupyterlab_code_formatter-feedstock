@@ -1,17 +1,19 @@
 {% set name = "jupyterlab_code_formatter" %}
-{% set version = "3.0.2" %}
+{% set version = "3.0.3" %}
+{% set tests_to_skip = "test_can_use_styler" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 55adb8fa8b9bd58f0b39e7d3ead6c1e862e9ebc1444a66cdb4233d8dc6351d4b
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 179e3c85cf6c0fc3c321c84bae446f3a2ad517e26606989c9485ce72e6c781c5
 
 build:
   number: 0
-  skip: true # [py<37]
+  skip: true  # [py<37]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
@@ -21,12 +23,14 @@ requirements:
     - hatch-jupyter-builder >=0.5
     - python
     - pip
+    - jupyterlab >=4.0.0,<5
   run:
     - jupyter_server >=1.21,<3
     - packaging
     - python
+    - jupyter-server <3,>=1.21
   run_constrained:
-    # infered from changelog 
+    # infered from changelog
     - jupyterlab >=4,<5
     - notebook >=6,<8
 
@@ -38,7 +42,7 @@ test:
   requires:
     - jupyterlab
     - pip
-    - m2-grep # [win]
+    - m2-grep  # [win]
     - pytest
     - pytest-asyncio
     - pytest-jupyter >=0.6.0
@@ -58,9 +62,7 @@ test:
     # extension is marked as enbaled and outdated, contrary to what the changelog states, but is still functional
     #- jupyter labextension list 2>&1 | grep -ie "jupyterlab_code_formatter.*OK.*(python, jupyterlab-code-formatter)"
     # missing styler for test_can_use_styler*
-    {% set tests_to_skip = "test_can_use_styler" %}
     # some issues with subprocess call inside test on windows
-    {% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
     - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not ({{ tests_to_skip }})"
 
 about:

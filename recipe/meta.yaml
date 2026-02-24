@@ -42,7 +42,7 @@ test:
     - pytest-asyncio
     - pytest-jupyter >=0.6.0
     - pytest-jupyter-server >=0.6.0
-    - black >=22.1.0,<24
+    - black >=22.1.0,<24  # [py<313]
     - isort
     - yapf
     # - rpy2 # missing
@@ -60,7 +60,7 @@ test:
     {% set tests_to_skip = "test_can_use_styler" %}
     # some issues with subprocess call inside test on windows
     {% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
-    - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not ({{ tests_to_skip }})"
+    - pytest -p pytest_jupyter.jupyter_server -vv jupyterlab_code_formatter/tests -k "not ({{ tests_to_skip }})"  # [py<313]
 
 about:
   home: https://github.com/ryantam626/jupyterlab_code_formatter

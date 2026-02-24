@@ -42,7 +42,7 @@ test:
     - pytest-asyncio
     - pytest-jupyter >=0.6.0
     - pytest-jupyter-server >=0.6.0
-    - black >=22.1.0
+    - black >=22.1.0,<24
     - isort
     - yapf
     # - rpy2 # missing

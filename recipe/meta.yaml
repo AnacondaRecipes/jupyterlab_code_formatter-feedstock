@@ -1,33 +1,32 @@
 {% set name = "jupyterlab_code_formatter" %}
-{% set version = "3.0.2" %}
+{% set version = "3.0.3" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 55adb8fa8b9bd58f0b39e7d3ead6c1e862e9ebc1444a66cdb4233d8dc6351d4b
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 179e3c85cf6c0fc3c321c84bae446f3a2ad517e26606989c9485ce72e6c781c5
 
 build:
   number: 0
-  skip: true # [py<37]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  skip: true # [py<37]
 
 requirements:
   host:
+    - pip
+    - python
     - hatchling >=1.5.0
+    - jupyterlab >=4.0.0,<5
     - hatch-nodejs-version
     - hatch-jupyter-builder >=0.5
-    - python
-    - pip
   run:
     - jupyter_server >=1.21,<3
     - packaging
     - python
   run_constrained:
-    # infered from changelog 
-    - jupyterlab >=4,<5
     - notebook >=6,<8
 
 test:

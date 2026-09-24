@@ -1,10 +1,8 @@
 {% set name = "jupyterlab_code_formatter" %}
 {% set version = "3.1.0" %}
-{% set tests_to_skip = "test_can_use_styler" %}
-{% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -25,11 +23,12 @@ requirements:
     - hatch-nodejs-version >=0.3.2
     - hatch-jupyter-builder >=0.5
   run:
+    - python
     - jupyter_server >=2.4.0,<3
     - packaging
-    - python
-  run_constrained:
-    - notebook >=6,<8
+
+{% set tests_to_skip = "test_can_use_styler" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_pollution_on_import" %}  # [win]
 
 test:
   source_files:
